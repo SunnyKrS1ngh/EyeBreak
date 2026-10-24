@@ -2,6 +2,8 @@
 
 I couldn't find any suitable apps for EyeBreak online, most of them had a lot of bloatware just for a simple task, so I decided to make my own.
 
+If you are a non-tech person: Just open the EyeBreak.exe file and the app will open.
+
 Description: 
 A lightweight, quiet Windows break reminder for 20-20-20 eye breaks and periodic movement breaks. Runs in the system tray, keeps scheduling while minimized, and avoids popping over full-screen games by deferring reminders until it is safe to show them.
 
