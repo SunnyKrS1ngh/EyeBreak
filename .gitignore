@@ -11,10 +11,6 @@ venv/
 env/
 ENV/
 
-# PyInstaller / Distribution
-build/
-dist/
-
 # Pytest / Coverage
 .pytest_cache/
 .coverage
