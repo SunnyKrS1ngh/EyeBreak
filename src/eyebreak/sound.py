@@ -1,11 +1,9 @@
 """Lightweight MP3 playback via the Windows MCI API.
 
 No third-party dependencies: winmm.dll ships with every Windows install.
-The public interface is a single :class:`AlertSound` object that:
-  - plays the sound immediately on ``play()``
-  - replays automatically every *repeat_interval_ms* milliseconds via a
-    tkinter ``after`` callback until ``stop()`` is called
-  - is safe to call from any tkinter callback
+Public interface:
+  - :class:`AlertSound`: plays a sound repeatedly on a timer until stopped
+  - :func:`play_sound_once`: plays a one-shot sound effect asynchronously in the background
 """
 
 from __future__ import annotations
@@ -14,6 +12,7 @@ import ctypes
 import itertools
 import logging
 import sys
+import threading
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -24,7 +23,7 @@ log = logging.getLogger(__name__)
 
 IS_WINDOWS = sys.platform == "win32"
 
-# Resolve the bundled sound file.
+# Resolve the bundled sounds directory.
 # When frozen by PyInstaller the package lives under sys._MEIPASS;
 # in a normal install it lives next to this source file.
 if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
@@ -33,6 +32,9 @@ else:
     _SOUNDS_DIR = Path(__file__).parent / "sounds"
 
 DEFAULT_SOUND = _SOUNDS_DIR / "faah.mp3"
+WELL_DONE_SOUND = _SOUNDS_DIR / "wellDone.mp3"
+SHABASH_SOUND = _SOUNDS_DIR / "shabash.mp3"
+BRUH_SOUND = _SOUNDS_DIR / "bruh.mp3"
 
 # Unique alias counter so multiple simultaneous open commands don't clash.
 _alias_counter = itertools.count(1)
@@ -66,6 +68,26 @@ def _play_once(path: Path) -> str | None:
 def _close_alias(alias: str) -> None:
     _mci(f"stop {alias}")
     _mci(f"close {alias}")
+
+
+def play_sound_once(path: Path) -> None:
+    """Play a sound file once in a background daemon thread and release MCI handles."""
+    if not IS_WINDOWS:
+        return
+    if not path.exists():
+        log.debug("play_sound_once: file does not exist: %s", path)
+        return
+
+    def _worker() -> None:
+        alias = f"eyebreak_fx_{next(_alias_counter)}"
+        try:
+            if _mci(f'open "{path}" type mpegvideo alias {alias}'):
+                _mci(f"play {alias} wait")
+                _mci(f"close {alias}")
+        except Exception:
+            log.debug("play_sound_once failed for %s", path, exc_info=True)
+
+    threading.Thread(target=_worker, daemon=True).start()
 
 
 class AlertSound:

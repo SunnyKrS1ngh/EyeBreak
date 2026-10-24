@@ -9,8 +9,8 @@ a = Analysis(
     pathex=['src'],
     binaries=[],
     datas=[
-        # Bundle the alert sound
-        (str(SRC / 'sounds' / 'faah.mp3'), 'eyebreak/sounds'),
+        # Bundle all alert and effect sounds
+        (str(SRC / 'sounds'), 'eyebreak/sounds'),
     ],
     hiddenimports=[
         # pystray backend on Windows

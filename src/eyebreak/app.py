@@ -9,7 +9,7 @@ from typing import Any
 from . import __version__
 from .icon import create_icon
 from .scheduler import BreakFinished, Event, PromptDue, ReminderConfig, ReminderKind, Scheduler, configs_from_seconds
-from .sound import AlertSound
+from .sound import BRUH_SOUND, SHABASH_SOUND, WELL_DONE_SOUND, AlertSound, play_sound_once
 from .settings import AppSettings, load_settings, log_dir, save_settings
 from .ui.break_window import BreakWindow
 from .ui.dashboard import Dashboard
@@ -149,6 +149,11 @@ class EyeBreakApp:
                 # Resume the other timer now that this break is over.
                 if self.scheduler is not None:
                     self.scheduler.resume_kind(self._other_kind(event.kind))
+                # Play completion sound effect
+                if event.kind == ReminderKind.MOVEMENT:
+                    play_sound_once(WELL_DONE_SOUND)
+                elif event.kind == ReminderKind.EYE:
+                    play_sound_once(SHABASH_SOUND)
                 # Match against _break_window_kind (active countdown) OR
                 # current_break_kind (prompt still showing, edge case).
                 active_kind = self._break_window_kind or self.current_break_kind
@@ -252,6 +257,7 @@ class EyeBreakApp:
         self.scheduler.resume_kind(self._other_kind(self.current_break_kind))
         self.scheduler.skip(self.current_break_kind)
         self._dismiss_prompt()
+        play_sound_once(BRUH_SOUND)
 
     def _dismiss_prompt(self) -> None:
         self._alert_sound.stop()

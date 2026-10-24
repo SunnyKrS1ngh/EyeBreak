@@ -30,3 +30,6 @@ test_run.py
 .DS_Store
 Thumbs.db
 *.log
+
+# Ignore loose audio files in root directory
+/*.mp3
