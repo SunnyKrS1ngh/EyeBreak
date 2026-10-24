@@ -1,10 +1,9 @@
-"""The break prompt window."""
-from __future__ import annotations
-
+import sys
 import tkinter as tk
 from typing import Callable
 
 from ..scheduler import ReminderKind
+from ..windows import IS_WINDOWS, get_foreground_monitor_rect
 
 
 class BreakWindow:
@@ -126,10 +125,17 @@ class BreakWindow:
         self.window.update_idletasks()
         width = self.window.winfo_reqwidth()
         height = self.window.winfo_reqheight()
-        screen_w = self.window.winfo_screenwidth()
-        screen_h = self.window.winfo_screenheight()
-        x = screen_w - width - 16
-        y = screen_h - height - 56
+
+        mon_rect = get_foreground_monitor_rect()
+        if mon_rect is not None:
+            x = mon_rect.right - width - 16
+            y = mon_rect.bottom - height - 56
+        else:
+            screen_w = self.window.winfo_screenwidth()
+            screen_h = self.window.winfo_screenheight()
+            x = screen_w - width - 16
+            y = screen_h - height - 56
+
         self.window.geometry(f"{width}x{height}+{x}+{y}")
 
     def _format(self, seconds: float) -> str:
@@ -157,7 +163,18 @@ class BreakWindow:
     def show(self) -> None:
         self._position()
         self.window.deiconify()
+        self.window.attributes("-topmost", True)
         self.window.lift()
+        if IS_WINDOWS:
+            try:
+                import ctypes
+                hwnd = self.window.winfo_id()
+                # HWND_TOPMOST = -1, SWP_NOMOVE = 0x2, SWP_NOSIZE = 0x1, SWP_SHOWWINDOW = 0x40, SWP_NOACTIVATE = 0x10
+                ctypes.windll.user32.SetWindowPos(
+                    hwnd, -1, 0, 0, 0, 0, 0x0002 | 0x0001 | 0x0040 | 0x0010
+                )
+            except Exception:
+                pass
 
     def hide(self) -> None:
         if self._after_id:

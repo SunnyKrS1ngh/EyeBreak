@@ -78,7 +78,7 @@ class AppSettings:
     eye: EyeSettings = field(default_factory=EyeSettings)
     movement: MovementSettings = field(default_factory=MovementSettings)
     snooze_minutes: int = 5
-    fullscreen_detection: bool = True
+    fullscreen_detection: bool = False
     autostart: bool = False
     close_to_tray: bool = True
     show_notifications: bool = True
@@ -142,7 +142,7 @@ def validate_settings(settings: AppSettings) -> AppSettings:
             ),
         ),
         snooze_minutes=_clamp(settings.snooze_minutes, 5, SNOOZE_RANGE),
-        fullscreen_detection=_coerce_bool(settings.fullscreen_detection, True),
+        fullscreen_detection=_coerce_bool(settings.fullscreen_detection, False),
         autostart=_coerce_bool(settings.autostart, False),
         close_to_tray=_coerce_bool(settings.close_to_tray, True),
         show_notifications=_coerce_bool(settings.show_notifications, True),

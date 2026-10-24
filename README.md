@@ -5,7 +5,7 @@ I couldn't find any suitable apps for EyeBreak online, most of them had a lot of
 If you are a non-tech person: Just open the dist/EyeBreak/EyeBreak.exe file and the app will open.
 
 Description: 
-A lightweight, quiet Windows break reminder for 20-20-20 eye breaks and periodic movement breaks. Runs in the system tray, keeps scheduling while minimized, and avoids popping over full-screen games by deferring reminders until it is safe to show them.
+A lightweight, quiet Windows break reminder for 20-20-20 eye breaks and periodic movement breaks. Runs in the system tray, keeps scheduling while minimized, and displays reminders on top of your work and full-screen applications.
 
 ## Requirements
 
@@ -66,7 +66,7 @@ Defaults:
 | Movement interval | 60 min | Configurable 5-360 min |
 | Movement break duration | 5 min | Configurable 30s-30 min |
 | Snooze duration | 5 min | Configurable 1-60 min |
-| Full-screen detection | On | Best-effort; see limitations |
+| Silence reminders in full-screen | Off | Reminders show over full-screen apps by default |
 | Start automatically with Windows | Off | Per-user `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`, no admin |
 | Close to system tray | On | Dashboard close hides to tray |
 | Show notifications | On | Uses Windows tray balloon notifications |
@@ -80,13 +80,12 @@ Logs are written to:
 %LOCALAPPDATA%\EyeBreak\eyebreak.log
 ```
 
-## Gaming / full-screen behavior
+## Full-screen behavior
 
-- **Best-effort detection:** When the foreground window covers its monitor, reminders are suppressed and marked pending.
-- **Deferred safely:** If a break is due while in full-screen, no intrusive window is shown. As soon as you leave full-screen, the pending reminder is shown once.
-- **No burst on resume:** Large gaps (e.g. sleep/resume) are clamped so at most one prompt per schedule can fire.
-- **Disable anytime:** Turn off *Full-screen detection* in settings if it causes issues.
-- **Limitations:** Exclusive-fullscreen games can sometimes report different foreground windows; borderless windows not covering the full monitor won't be treated as full-screen; UAC/secure desktops, some overlays, or multi-monitor edge cases may not be detected. The app never injects into processes, hooks input, or captures activity.
+- **Shows over full-screen:** Break reminders and countdowns appear on top of all windows, including full-screen video, browsers, and games.
+- **Multi-monitor aware:** The reminder displays in the bottom-right corner of the monitor hosting the active window.
+- **Audio alert:** The gentle audio cue plays even when focused in an application.
+- **Optional suppression:** If you prefer never to be interrupted during full-screen games or presentations, you can turn on *Silence reminders during full-screen apps* in Settings. Reminders will then be deferred until you exit full-screen.
 
 ## Building a standalone Windows executable
 

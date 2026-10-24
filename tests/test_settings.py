@@ -13,6 +13,7 @@ def test_load_missing_returns_defaults(tmp_path: Path) -> None:
     assert s.movement.interval_minutes == 60
     assert s.movement.duration_seconds == 300
     assert s.snooze_minutes == 5
+    assert s.fullscreen_detection is False
 
 
 def test_malformed_json_quarantined_and_defaults_returned(tmp_path: Path) -> None:

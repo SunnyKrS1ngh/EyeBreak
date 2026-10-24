@@ -255,6 +255,31 @@ def get_primary_work_area() -> Rect | None:
     return Rect(rect.left, rect.top, rect.right, rect.bottom)
 
 
+def get_foreground_monitor_rect() -> Rect | None:
+    """Return the bounding rectangle of the monitor hosting the current foreground window."""
+    if not IS_WINDOWS or user32 is None:
+        return None
+    try:
+        hwnd = user32.GetForegroundWindow()
+        if not hwnd:
+            return None
+        monitor = user32.MonitorFromWindow(hwnd, MONITOR_DEFAULTTONEAREST)
+        if not monitor:
+            return None
+        info = MONITORINFO()
+        info.cbSize = ctypes.sizeof(MONITORINFO)
+        if not user32.GetMonitorInfoW(monitor, ctypes.byref(info)):
+            return None
+        return Rect(
+            info.rcMonitor.left,
+            info.rcMonitor.top,
+            info.rcMonitor.right,
+            info.rcMonitor.bottom,
+        )
+    except Exception:
+        return None
+
+
 # --------------------------------------------------------------------- autostart
 def autostart_command() -> str:
     """Build the command stored in the per-user Run key."""

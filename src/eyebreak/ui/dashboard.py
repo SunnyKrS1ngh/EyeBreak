@@ -63,7 +63,7 @@ class SettingsDialog(tk.Toplevel):
 
         tk.Label(frame, text="Snooze (min)", fg="#cbd5e1", bg="#0f172a").grid(row=g, column=0, sticky="w", padx=12)
         tk.Spinbox(frame, from_=1, to=60, textvariable=self.snooze, width=6).grid(row=g, column=1, sticky="w")
-        check(6, "Enable full-screen detection", self.fullscreen)
+        check(6, "Silence reminders during full-screen apps", self.fullscreen)
         check(7, "Start automatically with Windows", self.autostart)
         check(8, "Close to system tray", self.close_tray)
         check(9, "Show notifications", self.notify)
