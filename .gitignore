@@ -31,5 +31,4 @@ test_run.py
 Thumbs.db
 *.log
 
-# Ignore loose audio files in root directory
-/*.mp3
+
