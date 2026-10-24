@@ -1,0 +1,31 @@
+[project]
+name = "eyebreak"
+version = "0.1.0"
+description = "A lightweight Windows eye-care and movement break reminder"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+dependencies = [
+    "pillow>=10.4",
+    "pystray>=0.19.5",
+]
+
+[project.gui-scripts]
+eyebreak = "eyebreak.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pyinstaller>=6.22.3",
+    "pytest>=8.3",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/eyebreak"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
